@@ -1,21 +1,9 @@
-function [V,D] = qdwheig(A)
-% fprintf("My custom qdwh_EIG implementation!\n")
-if max(size(A)) == 1
-    V = [1];
-    D = A;
-    return
-end
-s = medianestimate(A);
-dim = max(size(A));
-[U,H,it] = qdwh(A-s*eye(dim));
-C = (eye(dim)+U)/2;
-[V1,V2,W] = subspaceiteration(A,C,10^(-9));
-A1 = V1'*A*V1;
-A2 = V2'*A*V2;
-[W1,D1] = qdwheig(A1);
-[W2,D2] = qdwheig(A2);
-D = blkdiag(D1, D2);
-V = W*blkdiag(W1, W2);
+function [V1, V2] = first_call(A)
+    s = medianestimate(A);
+    dim = max(size(A));
+    [U, H, it] = qdwh_og(A - s * eye(dim));
+    C = (eye(dim) + U) / 2;
+    [V1, V2, W] = subspaceiteration(A, C, 10^(-14));
 end
 
 function [s] = medianestimate(A)
@@ -41,4 +29,3 @@ U1 = V1;
 U2 = V2;
 U = Q;
 end
-

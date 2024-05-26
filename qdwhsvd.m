@@ -1,4 +1,4 @@
-function [U,S,V] = qdwhsvd(A)
+function [Up, H, it, U,S,V] = qdwhsvd(A)
 % fprintf("My custom qdwh_SVD implementation!\n")
 [Up, H,it] = qdwh(A);
 [V,S] = qdwheig(H);
