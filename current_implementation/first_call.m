@@ -1,7 +1,7 @@
 function [V1, V2] = first_call(A)
     s = medianestimate(A);
     dim = max(size(A));
-    [U, H, it] = qdwh_og(A - s * eye(dim));
+    [U, H, it] = qdwh(A - s * eye(dim));
     C = (eye(dim) + U) / 2;
     [V1, V2, W] = subspaceiteration(A, C, 10^(-14));
 end

@@ -17,7 +17,10 @@ function large_matrix_test(m, n)
         backward_errors = zeros(num_trials, 1); % For storing backward errors
         
         for trial = 1:num_trials
-            [U, Sigma, V, A] = generate_complex_Matrix(m, n, p);
+            rng(trial); % Fix the seed for reproducibility
+            trial_timer = tic; % Start timer for the current trial
+            
+            [U, Sigma, V, A] = generateMatrix(m, n, p);
             [Uini, H, it, Uout, singvals, Vout] = svd_og(A);
             [V1, V2] = first_call(H);
             
@@ -44,6 +47,9 @@ function large_matrix_test(m, n)
             
             % Compute backward error
             backward_errors(trial) = computeBackwardError(A, Uout, Sigma, Vout);
+            
+            elapsed_time = toc(trial_timer); % Stop timer for the current trial
+            fprintf('Trial %d for power %d completed in %f seconds.\n', trial, p, elapsed_time);
         end
         
         % Compute average errors over all trials
@@ -85,29 +91,14 @@ function large_matrix_test(m, n)
         fprintf('Minimum number of iterations: %f\n', min(iterations));
         fprintf('Maximum number of iterations: %f\n', max(iterations));
         
-        fprintf('Elapsed time: %f seconds.\n', toc(total_timer));
+        fprintf('Elapsed time for power %d: %f seconds.\n', p, toc(total_timer));
     end
 end
-
 
 function [U, Sigma, V, A] = generateMatrix(m, n, p)
     % Generate random orthogonal matrices U (mxm) and V (nxn)
     [U, ~] = qr(randn(m));
     [V, ~] = qr(randn(n));
-    
-    % Create the singular values decreasing according to 1/k^p
-    k = 1:n; % Smaller dimension for the diagonal matrix
-    sigma = 1 ./ (k.^p);
-    Sigma = diag(sigma);
-    
-    % Construct the matrix A with dimensions mxn
-    A = U(:, 1:n) * Sigma * V'; % U reduced to mxn by taking only the first n columns
-end
-
-function [U, Sigma, V, A] = generate_complex_Matrix(m, n, p)
-    % Generate random complex orthogonal matrices U (mxm) and V (nxn)
-    [U, ~] = qr(randn(m) + 1i*randn(m));
-    [V, ~] = qr(randn(n) + 1i*randn(n));
     
     % Create the singular values decreasing according to 1/k^p
     k = 1:n; % Smaller dimension for the diagonal matrix
@@ -144,15 +135,12 @@ function ratio = computeErrorRatio(V1, V2, A)
     
     % Compute the Frobenius norm of E
     normE = norm(E, 'fro');
-
     
     % Compute the Frobenius norm of A
     normA = norm(A, 'fro');
-
     
     % Compute the ratio
     ratio = normE / normA;
-
 end
 
 function backward_error = computeBackwardError(A, U, Sigma, V)
@@ -192,4 +180,3 @@ function max_quantity = computeMaxOrthogonality(U, V)
     
     % Print the result
 end
-
