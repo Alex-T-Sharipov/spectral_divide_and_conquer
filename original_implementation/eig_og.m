@@ -14,6 +14,8 @@ function [Uout,eigvals] = eig_og(H,normH,minlen,NS)
 %             1: do N-S (default), 0: don't N-S (slightly faster).
   
 backtol = 10*eps/2; % Tolerance for relative backward error.
+disp("backtolerance:")
+disp(backtol)
 n = length(H);
 if nargin < 2 || isempty(normH); normH = norm(H,'fro'); end
 if nargin < 3 || isempty(minlen); minlen = 1; end
