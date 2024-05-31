@@ -14,44 +14,20 @@ Additionally, the root folder contains the `viz.ipynb` file, which was used to p
 
 ## Results
 
-After implementing the QR-based dynamically weighted Halley or "QDWH" algorithm along with its extensions "QDWHeig" and "QDWHsvd", we tested the implementation in the following way. We computed the left and right singular values of \(A \in \mathbb{R}^{10,000 \times 1,000}\) where \(A\) admitted the following singular values:
+After implementing the QR-based dynamically weighted Halley or "QDWH" algorithm along with its extensions "QDWHeig" and "QDWHsvd", we tested the implementation in the following way. We computed the left and right singular values of 10000 by 1000 real matrix A, where A admitted the following singular values:
 
-1. \(\sigma_k = \frac{1}{k}\)
-2. \(\sigma_k = \frac{1}{k^2}\)
-3. \(\sigma_k = \frac{1}{k^3}\)
+1. sigma_k = 1 / k
+2. sigma_k = 1 / (k^2)
+3. sigma_k = 1 / (k^3)
 
-We generated the matrix \(A\) by first creating random column orthogonal matrices \(U \in \mathbb{R}^{10,000 \times 1,000}\), \(V \in \mathbb{R}^{1,000 \times 1,000}\), and \(\Sigma = \operatorname{diag}(\sigma_1, \ldots, \sigma_{1000})\), and then computing \(A\) as \(U \Sigma V^T\). Furthermore, we computed thirty such matrices \(A\) and then computed the left and right singular vectors (given by the columns of \(\hat{U}\) and \(\hat{V}\) respectively) along with the singular values (given by the diagonal entries of \(\hat{\Sigma}\)) using the "QDWHsvd" algorithm. We then obtained the values of the following 7 metrics averaged over the 10 random matrices.
+We generated the matrix A by first creating random column orthogonal matrices U, V, and Sigma, and then computing A as U Sigma V^T. Furthermore, we computed 10 such matrices A and then computed the left and right singular vectors (given by the columns of U hat and V hat respectively) along with the singular values (given by the diagonal entries of Sigma hat) using the "QDWHsvd" algorithm. We then obtained the values of the following 8 metrics averaged over the 10 random matrices.
 
 1. The squared error associated with the left singular vectors.
-    \[
-    \frac{1}{m \times n} \sum_{i=1}^{m} \sum_{j=1}^{n} U_{\text{error}}(i, j); \text{ where } U_{\text{error}}=(U - \hat{U})^2;
-    \]
-
 2. The squared error associated with the right singular vectors.
-    \[
-    \frac{1}{n \times n} \sum_{i=1}^{n} \sum_{j=1}^{n} V_{\text{error}}(i, j); \text{ where } V_{\text{error}}=(V - \hat{V})^2;
-    \]
-
 3. The squared error associated with the singular values.
-    \[
-    \frac{1}{n} \sum_{i=1}^{n} \Sigma_{ii}
-    \]
-
 4. The backward error.
-    \[
-    \text{Backward error } =  \frac{\|A - \hat{U} \hat{\Sigma} \hat{V}^*\|}{\|A\|_F}
-    \]
-
-5. The orthogonality error associated with \(\hat{U}\) and \(\hat{V}\).
-    \[
-    \max \left( \frac{\|\hat{U}^* \hat{U} - I\|_F}{\sqrt{n}}, \frac{\|\hat{V}^* \hat{V} - I\|_F}{\sqrt{n}} \right)
-    \]
-
+5. The orthogonality error associated with U hat and V hat.
 6. The "berr" metric.
-    \[
-    \frac{\|E\|_F}{\|A\|_F} \text{ where } [\hat{V}_1 \ \hat{V}_2]^* A [\hat{V}_1 \ \hat{V}_2] = \begin{bmatrix} A_1 & E^* \\ E & A_2 \end{bmatrix}
-    \]
-
 7. The number of iterations the "QDWH" algorithm was invoked.
 8. The time required to process the matrix by the "QDWH" algorithm.
 
